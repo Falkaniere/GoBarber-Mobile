@@ -1,6 +1,9 @@
-import React from 'react';
+import React, {useCallback, useRef} from 'react';
 import { Image, View, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
+import { useNavigation } from '@react-navigation/native';
+import { Form } from '@unform/mobile';
+import { FormHandles } from '@unform/core';
 
 import Input from '../../Components/Input';
 import Button from '../../Components/Button';
@@ -10,6 +13,13 @@ import { Container, Title, ForgotPassword, ForgotPasswordText, CreateAccountButt
 import logoImg from '../../assets/logo.png';
 
 const SignIn: React.FC = () => {
+  const formRef = useRef<FormHandles>(null);
+  const navigation = useNavigation();
+
+  const handleSignIn = useCallback((data: object) => {
+    console.log(data);
+  }, []);
+
   return (
     <>
       <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{flex: 1}}>
@@ -24,18 +34,21 @@ const SignIn: React.FC = () => {
               <Title>Faça seu logon</Title>
             </View>
 
-            <Input name="email" icon="mail" placeholder="email"/>
+            <Form ref={formRef} onSubmit={handleSignIn}>
 
-            <Input name="password" icon="lock" placeholder="senha"/>
+              <Input name="email" icon="mail" placeholder="email"/>
 
-            <Button onPress={() => {console.log('deu'); }}>Entrar</Button>
+              <Input name="password" icon="lock" placeholder="senha"/>
+
+              <Button onPress={() => {formRef.current?.submitForm(); }}>Entrar</Button>
+            </Form>
 
             <ForgotPassword onPress={() => {console.log('deu'); }}>
               <ForgotPasswordText>Esqueci minha senha</ForgotPasswordText>
             </ForgotPassword>
           </Container>
 
-          <CreateAccountButton onPress={() => {}}>
+          <CreateAccountButton onPress={() => navigation.navigate('SignUp')}>
             <Icon name="log-in" size={20} color="#ff9000" />
             <CreateAccountButtonText>Criar uma conta</CreateAccountButtonText>
           </CreateAccountButton>
